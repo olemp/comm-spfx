@@ -1,0 +1,26 @@
+{
+  "version": "2.0",
+  "bundles": {
+    "news-admin-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/newsAdmin/NewsAdminWebPart.js",
+          "manifest": "./src/webparts/newsAdmin/NewsAdminWebPart.manifest.json"
+        }
+      ]
+    },
+    "article-metadata-web-part": {
+      "components": [
+        {
+          "entrypoint": "./lib/webparts/articleMetadata/ArticleMetadataWebPart.js",
+          "manifest": "./src/webparts/articleMetadata/ArticleMetadataWebPart.manifest.json"
+        }
+      ]
+    }
+  },
+  "externals": {},
+  "localizedResources": {
+    "NewsAdminWebPartStrings": "lib/webparts/newsAdmin/loc/{locale}.js",
+    "ArticleMetadataWebPartStrings": "lib/webparts/articleMetadata/loc/{locale}.js"
+  }
+}

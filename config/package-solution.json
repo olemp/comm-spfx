@@ -1,0 +1,12 @@
+{
+  "$schema": "https://dev.office.com/json-schemas/spfx-build/package-solution.schema.json",
+  "solution": {
+    "name": "comm-spfx",
+    "id": "c1a3507f-8e95-4a44-beca-fe6194a80049",
+    "version": "1.0.5.3",
+    "skipFeatureDeployment": true
+  },
+  "paths": {
+    "zippedPackage": "solution/comm-spfx.sppkg"
+  }
+}
