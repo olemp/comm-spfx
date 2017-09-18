@@ -7,14 +7,6 @@ const spsync = require('gulp-spsync-creds').sync;
 const sppkgDeploy = require('node-sppkg-deploy');
 
 
-const environmentInfo = {
-    'username': 'olemp@olemp.onmicrosoft.com',
-    'password': '[&8j]EQYbBEakv5G',
-    'tenant': 'olemp',
-    'cdnSite': 'sites/comm_spfx_cdn',
-    'cdnLib': 'SiteAssets',
-    'catalogSite': 'sites/app_catalog'
-};
 
 build.task('update-manifest', {
     execute: (config) => {
