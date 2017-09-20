@@ -101,7 +101,7 @@ export default class ArticleMetadata extends React.Component<IArticleMetadataPro
             choices: fld.Choices,
             termSetId: fld.TermSetId,
           }))
-          .filter(prop => ["text", "choice", "boolean"].indexOf(prop.fieldType) !== -1);
+          .filter(prop => this.props.supportedFieldTypes.indexOf(prop.fieldType) !== -1);
         this.setState({ listFields, pageListItem, properties });
       })
       .catch(err => {

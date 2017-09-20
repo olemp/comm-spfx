@@ -10,4 +10,5 @@ export interface IArticleMetadataProps {
   list: List;
   pageItem: Item;
   showInReadMode: boolean;
+  supportedFieldTypes: string[];
 }

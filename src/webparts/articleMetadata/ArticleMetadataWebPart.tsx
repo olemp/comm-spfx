@@ -31,6 +31,7 @@ export default class ArticleMetadataWebPart extends BaseClientSideWebPart<IArtic
         list: this.list,
         pageItem: this.pageItem,
         showInReadMode: this.properties.showInReadMode,
+        supportedFieldTypes: ["text", "choice", "boolean"],
       },
     );
     ReactDom.render(element, this.domElement);
