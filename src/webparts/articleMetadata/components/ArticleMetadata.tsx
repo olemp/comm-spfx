@@ -24,6 +24,9 @@ export default class ArticleMetadata extends React.Component<IArticleMetadataPro
   }
 
   public render(): React.ReactElement<IArticleMetadataProps> {
+    if(this.props.displayMode === DisplayMode.Read && !this.props.showInReadMode) {
+      return null;
+    }
     return (
       <div className={styles.articleMetadata}>
         <div className={styles.container}>
@@ -86,17 +89,19 @@ export default class ArticleMetadata extends React.Component<IArticleMetadataPro
   private fetchProperties() {
     Promise.all([
       this.props.list.fields.filter(`Group eq '${this.props.groupName}'`).get(),
-      this.props.pageItem.fieldValuesAsHTML.get(),
+      this.props.pageItem.get(),
     ])
       .then(([listFields, pageListItem]) => {
-        let properties = listFields.map(fld => ({
-          fieldType: fld.TypeAsString.toLowerCase(),
-          fieldName: fld.InternalName,
-          title: fld.Title,
-          value: pageListItem[fld.InternalName],
-          choices: fld.Choices,
-          termSetId: fld.TermSetId,
-        }));
+        let properties = listFields
+          .map(fld => ({
+            fieldType: fld.TypeAsString.toLowerCase(),
+            fieldName: fld.InternalName,
+            title: fld.Title,
+            value: pageListItem[fld.InternalName],
+            choices: fld.Choices,
+            termSetId: fld.TermSetId,
+          }))
+          .filter(prop => ["text", "choice", "boolean"].indexOf(prop.fieldType) !== -1);
         this.setState({ listFields, pageListItem, properties });
       })
       .catch(err => {

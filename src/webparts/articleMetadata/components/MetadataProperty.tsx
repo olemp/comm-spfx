@@ -9,33 +9,18 @@ import IMetadataPropertyProps from './IMetadataPropertyProps';
 export default class MetadataProperty extends React.Component<IMetadataPropertyProps, any> {
   constructor(props) {
     super(props);
-    this.state = {
-      terms: [],
-    };
-  }
-
-  public componentDidMount() {
-    const { prop, displayMode } = this.props;
-    if (displayMode === DisplayMode.Edit) {
-      switch (prop.fieldType) {
-        case "taxonomyfieldtype": {
-          this.fetchTerms();
-        }
-          break;
-      }
-    }
-  }
-
-  private fetchTerms() {
-    this.setState({ terms: [{ Label: "Arbeid og næringsliv" }] });
+    this.state = {};
   }
 
   public render() {
     const { prop, displayMode, onChange } = this.props;
-    const { terms } = this.state;
     let value = null;
     if (displayMode === DisplayMode.Read) {
       switch (prop.fieldType) {
+        case "boolean": {
+          value = prop.value ? "Ja" : "Nei";
+        }
+          break;
         default: {
           value = prop.value;
         }
@@ -59,18 +44,6 @@ export default class MetadataProperty extends React.Component<IMetadataPropertyP
               options={prop.choices.map(choice => ({
                 key: choice,
                 text: choice,
-              }))} />
-          );
-        }
-          break;
-        case "taxonomyfieldtype": {
-          value = (
-            <Dropdown
-              selectedKey={prop.value}
-              onChanged={option => onChange(prop, option.text)}
-              options={terms.map(term => ({
-                key: term.Label,
-                text: term.Label,
               }))} />
           );
         }

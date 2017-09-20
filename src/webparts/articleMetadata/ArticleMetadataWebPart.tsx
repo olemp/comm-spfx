@@ -1,4 +1,3 @@
-import { } from '@microsoft/sp-core-library/lib/DisplayMode';
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
 import * as unique from 'array-unique';
@@ -8,8 +7,9 @@ import {
   IPropertyPaneConfiguration,
   PropertyPaneTextField,
   PropertyPaneDropdown,
+  PropertyPaneToggle,
 } from '@microsoft/sp-webpart-base';
-import pnp, { List, Item, LogLevel, ConsoleListener } from "sp-pnp-js";
+import pnp, { List, Item, LogLevel, ConsoleListener } from 'sp-pnp-js';
 import * as strings from 'ArticleMetadataWebPartStrings';
 import ArticleMetadata from './components/ArticleMetadata';
 import { IArticleMetadataProps } from './components/IArticleMetadataProps';
@@ -30,6 +30,7 @@ export default class ArticleMetadataWebPart extends BaseClientSideWebPart<IArtic
         displayMode: this.displayMode,
         list: this.list,
         pageItem: this.pageItem,
+        showInReadMode: this.properties.showInReadMode,
       },
     );
     ReactDom.render(element, this.domElement);
@@ -71,18 +72,21 @@ export default class ArticleMetadataWebPart extends BaseClientSideWebPart<IArtic
         {
           groups: [
             {
-              groupName: "Innstillinger",
+              groupName: 'Innstillinger',
               groupFields: [
                 PropertyPaneTextField('headerText', {
-                  label: "Overskrift",
+                  label: 'Overskrift',
                 }),
                 PropertyPaneDropdown('groupName', {
-                  label: "Gruppenavn",
+                  label: 'Gruppenavn',
                   options: this.fieldGroups.map(grp => ({
                     key: grp,
                     text: grp,
                   }))
                 }),
+                PropertyPaneToggle('showInReadMode', {
+                  label: "Vis i lesemodus",
+                })
               ]
             }
           ]
