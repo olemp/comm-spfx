@@ -3,7 +3,7 @@
   "solution": {
     "name": "comm-spfx",
     "id": "c1a3507f-8e95-4a44-beca-fe6194a80049",
-    "version": "0.0.6.8",
+    "version": "0.0.6.9",
     "skipFeatureDeployment": true
   },
   "paths": {

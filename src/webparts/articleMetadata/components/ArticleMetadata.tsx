@@ -5,7 +5,7 @@ import { PrimaryButton } from 'office-ui-fabric-react/lib/Button';
 import { DisplayMode } from '@microsoft/sp-core-library';
 import styles from './ArticleMetadata.module.scss';
 import { IArticleMetadataProps } from './IArticleMetadataProps';
-import { IArticleMetadataState } from './IArticleMetadataState';
+import { IArticleMetadataState, IArticleMetadataProperty } from './IArticleMetadataState';
 import { escape } from '@microsoft/sp-lodash-subset';
 import {
   SPHttpClient,
@@ -24,7 +24,7 @@ export default class ArticleMetadata extends React.Component<IArticleMetadataPro
   }
 
   public render(): React.ReactElement<IArticleMetadataProps> {
-    if(this.props.displayMode === DisplayMode.Read && !this.props.showInReadMode) {
+    if (this.props.displayMode === DisplayMode.Read && !this.props.showInReadMode) {
       return null;
     }
     return (
@@ -61,8 +61,8 @@ export default class ArticleMetadata extends React.Component<IArticleMetadataPro
       });
   })
 
-  private onPropertyChange = (propChanged, value) => {
-    Logger.log({ message: `Property ${propChanged} was changed`, data: { propChanged, value }, level: LogLevel.Info });
+  private onPropertyChange = (propChanged: IArticleMetadataProperty, value) => {
+    Logger.log({ message: `Property ${propChanged.fieldName} was changed`, data: { propChanged, value }, level: LogLevel.Info });
     this.setState({
       properties: this.state.properties.map(prop => {
         if (propChanged.fieldName === prop.fieldName) {
