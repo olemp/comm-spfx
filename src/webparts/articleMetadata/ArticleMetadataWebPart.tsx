@@ -26,7 +26,6 @@ export default class ArticleMetadataWebPart extends BaseClientSideWebPart<IArtic
       {
         title: this.properties.headerText,
         groupName: this.properties.groupName,
-        context: this.context,
         displayMode: this.displayMode,
         list: this.list,
         pageItem: this.pageItem,

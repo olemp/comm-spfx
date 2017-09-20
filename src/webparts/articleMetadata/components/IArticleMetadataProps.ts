@@ -5,7 +5,6 @@ import { DisplayMode } from '@microsoft/sp-core-library';
 export interface IArticleMetadataProps {
   title: string;
   groupName: string;
-  context: WebPartContext;
   displayMode: DisplayMode;
   list: List;
   pageItem: Item;

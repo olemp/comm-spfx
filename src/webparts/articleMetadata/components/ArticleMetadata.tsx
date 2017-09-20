@@ -47,7 +47,7 @@ export default class ArticleMetadata extends React.Component<IArticleMetadataPro
     );
   }
 
-  private onSaveChanges = (spHttpClient: SPHttpClient) => new Promise<ItemUpdateResult>((resolve, reject) => {
+  private onSaveChanges = () => new Promise<ItemUpdateResult>((resolve, reject) => {
     const values = {};
     this.state.properties.forEach(prop => {
       values[prop.fieldName] = prop.value;
@@ -78,7 +78,7 @@ export default class ArticleMetadata extends React.Component<IArticleMetadataPro
 
   public componentDidUpdate(prevProps: IArticleMetadataProps, prevState: IArticleMetadataState, prevContext: any) {
     if (prevProps.displayMode === DisplayMode.Edit && this.props.displayMode === DisplayMode.Read) {
-      this.onSaveChanges(this.props.context.spHttpClient).then(result => this.fetchProperties());
+      this.onSaveChanges().then(result => this.fetchProperties());
     }
   }
 
