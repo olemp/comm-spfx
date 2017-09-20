@@ -21,15 +21,16 @@ export default class ArticleMetadataWebPart extends BaseClientSideWebPart<IArtic
   private fieldGroups: any[] = [];
 
   public render(): void {
+    const { headerText, groupName, showInReadMode } = this.properties;
     const element: React.ReactElement<IArticleMetadataProps> = React.createElement(
       ArticleMetadata,
       {
-        title: this.properties.headerText,
-        groupName: this.properties.groupName,
+        title: headerText,
+        groupName,
         displayMode: this.displayMode,
         list: this.list,
         pageItem: this.pageItem,
-        showInReadMode: this.properties.showInReadMode,
+        showInReadMode,
         supportedFieldTypes: ["text", "choice", "boolean"],
       },
     );
@@ -37,16 +38,21 @@ export default class ArticleMetadataWebPart extends BaseClientSideWebPart<IArtic
   }
 
   public onInit(): Promise<void> {
-    return super.onInit().then(_ => {
+    return new Promise<void>((resolve, reject) => {
       pnp.log.activeLogLevel = LogLevel.Info;
       pnp.log.subscribe(new ConsoleListener());
       pnp.setup({
         spfxContext: this.context,
       });
-      const { listItem, list } = this.context.pageContext;
-      this.list = pnp.sp.web.lists.getById(list.id.toString());
-      this.pageItem = this.list.items.getById(listItem.id);
-      this.getPropertyPaneData();
+      this.list = pnp.sp.web.lists.getById(this.context.pageContext.list.id.toString());
+      this.pageItem = this.list.items.getById(this.context.pageContext.listItem.id);
+      this.getPropertyPaneData()
+        .then(_ => {
+          super.onInit()
+            .then(resolve)
+            .catch(reject);
+        })
+        .catch(reject);
     });
   }
 
@@ -64,9 +70,6 @@ export default class ArticleMetadataWebPart extends BaseClientSideWebPart<IArtic
   }
 
   protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
-    if (this.fieldGroups.length === 0) {
-      this.dispose();
-    }
     return {
       pages: [
         {
