@@ -47,14 +47,15 @@ export default class ArticleMetadata extends React.Component<IArticleMetadataPro
     );
   }
 
-  private onSaveChanges = () => new Promise<ItemUpdateResult>((resolve, reject) => {
+  private onSaveChanges = ({ pageItem }: IArticleMetadataProps, { properties }: IArticleMetadataState) => new Promise<ItemUpdateResult>((resolve, reject) => {
     const values = {};
-    this.state.properties.forEach(prop => {
-      values[prop.fieldName] = prop.value;
-    });
+    properties.forEach(prop => values[prop.fieldName] = prop.value);
     Logger.log({ message: `Updating page`, data: values, level: LogLevel.Info });
-    this.props.pageItem.update(values)
-      .then(resolve)
+    pageItem.update(values)
+      .then(() => {
+        Logger.log({ message: `Successfully updated page`, data: {}, level: LogLevel.Info });
+        resolve();
+      })
       .catch(err => {
         Logger.log({ message: `Failed to update page`, data: { err }, level: LogLevel.Error });
         reject();
@@ -78,18 +79,18 @@ export default class ArticleMetadata extends React.Component<IArticleMetadataPro
 
   public componentDidUpdate(prevProps: IArticleMetadataProps, prevState: IArticleMetadataState, prevContext: any) {
     if (prevProps.displayMode === DisplayMode.Edit && this.props.displayMode === DisplayMode.Read) {
-      this.onSaveChanges().then(result => this.fetchProperties());
+      this.onSaveChanges(this.props, this.state).then(result => this.fetchProperties(this.props, this.state));
     }
   }
 
   public componentDidMount() {
-    this.fetchProperties();
+    this.fetchProperties(this.props, this.state);
   }
 
-  private fetchProperties() {
+  private fetchProperties({ list, pageItem, supportedFieldTypes }: IArticleMetadataProps, { }: IArticleMetadataState) {
     Promise.all([
-      this.props.list.fields.filter(`Group eq '${this.props.groupName}'`).get(),
-      this.props.pageItem.get(),
+      list.fields.filter(`Group eq '${this.props.groupName}'`).get(),
+      pageItem.get(),
     ])
       .then(([listFields, pageListItem]) => {
         let properties = listFields
@@ -101,7 +102,7 @@ export default class ArticleMetadata extends React.Component<IArticleMetadataPro
             choices: fld.Choices,
             termSetId: fld.TermSetId,
           }))
-          .filter(prop => this.props.supportedFieldTypes.indexOf(prop.fieldType) !== -1);
+          .filter(prop => supportedFieldTypes.indexOf(prop.fieldType) !== -1);
         this.setState({ listFields, pageListItem, properties });
       })
       .catch(err => {
