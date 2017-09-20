@@ -7,6 +7,14 @@ const spsync = require('gulp-spsync-creds').sync;
 const sppkgDeploy = require('node-sppkg-deploy');
 
 
+const environmentInfo = {
+    'username': '',
+    'password': '',
+    'tenant': '',
+    'cdnSite': '',
+    'cdnLib': '',
+    'catalogSite': ''
+};
 
 build.task('update-manifest', {
     execute: (config) => {

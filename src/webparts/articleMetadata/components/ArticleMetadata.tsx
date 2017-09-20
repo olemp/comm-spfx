@@ -50,7 +50,12 @@ export default class ArticleMetadata extends React.Component<IArticleMetadataPro
       values[prop.fieldName] = prop.value;
     });
     Logger.log({ message: `Updating page`, data: values, level: LogLevel.Info });
-    this.props.pageItem.update(values).then(resolve, reject);
+    this.props.pageItem.update(values)
+      .then(resolve)
+      .catch(err => {
+        Logger.log({ message: `Failed to update page`, data: { err }, level: LogLevel.Error });
+        reject();
+      });
   })
 
   private onPropertyChange = (propChanged, value) => {
@@ -79,17 +84,23 @@ export default class ArticleMetadata extends React.Component<IArticleMetadataPro
   }
 
   private fetchProperties() {
-    this.props.pageItem.fieldValuesAsHTML.get().then(pageListItem => {
-      let properties = this.props.fields
-        .filter(fld => fld.Group === this.props.groupName)
-        .map(fld => ({
+    Promise.all([
+      this.props.list.fields.filter(`Group eq '${this.props.groupName}'`).get(),
+      this.props.pageItem.fieldValuesAsHTML.get(),
+    ])
+      .then(([listFields, pageListItem]) => {
+        let properties = listFields.map(fld => ({
           fieldType: fld.TypeAsString.toLowerCase(),
           fieldName: fld.InternalName,
           title: fld.Title,
           value: pageListItem[fld.InternalName],
           choices: fld.Choices,
+          termSetId: fld.TermSetId,
         }));
-      this.setState({ pageListItem, properties });
-    });
+        this.setState({ listFields, pageListItem, properties });
+      })
+      .catch(err => {
+        Logger.log({ message: `Failed to fetch properties`, data: { err }, level: LogLevel.Error });
+      });
   }
 }

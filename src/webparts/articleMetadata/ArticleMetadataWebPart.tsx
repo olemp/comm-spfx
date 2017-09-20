@@ -9,7 +9,7 @@ import {
   PropertyPaneTextField,
   PropertyPaneDropdown,
 } from '@microsoft/sp-webpart-base';
-import pnp, { List, Item } from "sp-pnp-js";
+import pnp, { List, Item, LogLevel, ConsoleListener } from "sp-pnp-js";
 import * as strings from 'ArticleMetadataWebPartStrings';
 import ArticleMetadata from './components/ArticleMetadata';
 import { IArticleMetadataProps } from './components/IArticleMetadataProps';
@@ -18,35 +18,34 @@ import { IArticleMetadataWebPartProps } from './IArticleMetadataWebPartProps';
 export default class ArticleMetadataWebPart extends BaseClientSideWebPart<IArticleMetadataWebPartProps> {
   private list: List;
   private pageItem: Item;
-  private initData = false;
-  private fields: any[] = [];
   private fieldGroups: any[] = [];
 
   public render(): void {
-    this._initializeData().then(_ => {
-      const props = {
+    const element: React.ReactElement<IArticleMetadataProps> = React.createElement(
+      ArticleMetadata,
+      {
         title: this.properties.headerText,
         groupName: this.properties.groupName,
         context: this.context,
         displayMode: this.displayMode,
         list: this.list,
         pageItem: this.pageItem,
-        fields: this.fields,
-      };
-      const element: React.ReactElement<IArticleMetadataProps> = React.createElement(
-        ArticleMetadata,
-        props,
-      );
-      ReactDom.render(element, this.domElement);
-    });
+      },
+    );
+    ReactDom.render(element, this.domElement);
   }
 
   public onInit(): Promise<void> {
     return super.onInit().then(_ => {
+      pnp.log.activeLogLevel = LogLevel.Info;
+      pnp.log.subscribe(new ConsoleListener());
       pnp.setup({
-        spfxContext: this.context
+        spfxContext: this.context,
       });
-      this._initializeData();
+      const { listItem, list } = this.context.pageContext;
+      this.list = pnp.sp.web.lists.getById(list.id.toString());
+      this.pageItem = this.list.items.getById(listItem.id);
+      this.getPropertyPaneData();
     });
   }
 
@@ -54,20 +53,12 @@ export default class ArticleMetadataWebPart extends BaseClientSideWebPart<IArtic
     return Version.parse('1.0');
   }
 
-  private _initializeData(): Promise<void> {
+  private getPropertyPaneData(): Promise<void> {
     return new Promise<void>((resolve, reject) => {
-      if (!this.initData) {
-        const { listItem, list } = this.context.pageContext;
-        this.list = pnp.sp.web.lists.getById(list.id.toString());
-        this.pageItem = this.list.items.getById(listItem.id);
-        this.list.fields.get().then(fields => {
-          this.fields = fields;
-          this.fieldGroups = unique(fields.map(f => f.Group));
-          this.initData = true;
-          resolve();
-        });
-      }
-      resolve();
+      this.list.fields.get().then(fields => {
+        this.fieldGroups = unique(fields.map(f => f.Group));
+        resolve();
+      });
     });
   }
 
@@ -78,12 +69,9 @@ export default class ArticleMetadataWebPart extends BaseClientSideWebPart<IArtic
     return {
       pages: [
         {
-          header: {
-            description: strings.PropertyPaneDescription
-          },
           groups: [
             {
-              groupName: strings.BasicGroupName,
+              groupName: "Innstillinger",
               groupFields: [
                 PropertyPaneTextField('headerText', {
                   label: "Overskrift",

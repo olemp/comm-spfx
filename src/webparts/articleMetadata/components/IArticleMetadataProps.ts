@@ -9,5 +9,4 @@ export interface IArticleMetadataProps {
   displayMode: DisplayMode;
   list: List;
   pageItem: Item;
-  fields: any[];
 }
