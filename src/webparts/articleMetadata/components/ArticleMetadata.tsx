@@ -40,17 +40,24 @@ export default class ArticleMetadata extends React.Component<IArticleMetadataPro
     if (inReadMode && !this.props.properties.showInReadMode) {
       return null;
     }
+
     if (this.state.isLoading) {
       return <Spinner size={SpinnerSize.large} />;
     }
+
     let containerClassName = [styles.container];
     let containerStyle: React.CSSProperties = {};
+
     if (this.props.properties.boxShadow && inReadMode) {
       containerStyle.boxShadow = "0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 25px 50px 0 rgba(0, 0, 0, 0.1)";
     }
+
     if (this.props.properties.useThemeColors && inReadMode) {
       containerClassName.push(styles.themeColors);
     }
+
+    const propertiesToRender = this.state.properties.filter(prop => this.props.fieldTypes.indexOf(prop.fieldType) !== -1);
+
     return (
       <div className={styles.articleMetadata}>
         <div className={containerClassName.join(" ")}
@@ -61,7 +68,7 @@ export default class ArticleMetadata extends React.Component<IArticleMetadataPro
               <div className={this.props.properties.headerTextSize}>{this.props.properties.headerText}</div>
             </div>
           </div>
-          {this.state.properties.map((prop, key) => (
+          {propertiesToRender.map((prop, key) => (
             <MetadataProperty
               key={key}
               className="property-row"
@@ -144,16 +151,14 @@ export default class ArticleMetadata extends React.Component<IArticleMetadataPro
     this.fetchProperties(this.props, this.state);
   }
 
-  private fetchProperties({ list, pageItem, fieldTypes }: IArticleMetadataProps, { }: IArticleMetadataState) {
+  private fetchProperties({ list, pageItem }: IArticleMetadataProps, { }: IArticleMetadataState) {
     Logger.log({ message: `ArticleMetadata: fetchProperties()`, data: { groupName: this.props.properties.groupName }, level: LogLevel.Info });
     Promise.all([
       list.fields.filter(`Group eq '${this.props.properties.groupName}'`).get(),
       pageItem.expand("FieldValuesAsHtml", "FieldValuesAsText").get(),
     ])
       .then(([listFields, pageListItem]) => {
-        let properties = listFields
-          .map(fld => new ArticleMetadataProperty(fld, pageListItem))
-          .filter(prop => fieldTypes.indexOf(prop.fieldType) !== -1);
+        let properties = listFields.map(fld => new ArticleMetadataProperty(fld, pageListItem));
         Logger.log({ message: `ArticleMetadata: fetchProperties() - Successfully retrieved and parsed properties`, data: { properties }, level: LogLevel.Info });
         this.setState({
           listFields,
