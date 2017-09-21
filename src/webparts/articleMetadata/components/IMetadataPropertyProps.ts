@@ -3,6 +3,9 @@ import { ArticleMetadataProperty } from './IArticleMetadataState';
 
 export default interface IMetadataPropertyProps {
     prop: ArticleMetadataProperty;
+    labelSize: string;
+    valueSize: string;
+    columnPadding: number;
     displayMode: DisplayMode;
     onChange: (prop: ArticleMetadataProperty, value: any, additionalParams?: any) => void;
 }

@@ -29,15 +29,28 @@ export default class ArticleMetadata extends React.Component<IArticleMetadataPro
   }
 
   public render(): React.ReactElement<IArticleMetadataProps> {
+    if (this.props.displayMode === DisplayMode.Read && !this.props.properties.showInReadMode) {
+      return null;
+    }
     if (this.state.isLoading) {
       return <Spinner size={SpinnerSize.large} />;
     }
+    let containerClassName = [styles.container];
+    let containerStyle: React.CSSProperties = {};
+    if (this.props.properties.boxShadow) {
+      containerStyle.boxShadow = "0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 25px 50px 0 rgba(0, 0, 0, 0.1)";
+    }
+    if (this.props.properties.useThemeColors && this.props.displayMode === DisplayMode.Read) {
+      containerClassName.push(styles.themeColors);
+    }
     return (
       <div className={styles.articleMetadata}>
-        <div className={styles.container}>
+        <div className={containerClassName.join(" ")}
+          style={containerStyle}>
           <div className={`ms-Grid-row ${styles.row}`}>
-            <div className="ms-Grid-col ms-lg10 ms-xl8 ms-xlPush2 ms-lgPush1">
-              <div className="ms-font-xxl">{this.props.title}</div>
+            <div className={`ms-Grid-col ms-sm12 ${styles.column}`}
+              style={{ padding: this.props.properties.columnPadding }}>
+              <div className={this.props.properties.headerTextSize}>{this.props.properties.headerText}</div>
             </div>
           </div>
           {this.state.properties.map((prop, key) => (
@@ -45,7 +58,10 @@ export default class ArticleMetadata extends React.Component<IArticleMetadataPro
               key={key}
               prop={prop}
               displayMode={this.props.displayMode}
-              onChange={this.onPropertyChange} />
+              onChange={this.onPropertyChange}
+              labelSize={this.props.properties.labelSize}
+              valueSize={this.props.properties.valueSize}
+              columnPadding={this.props.properties.columnPadding} />
           ))}
         </div>
       </div >
@@ -119,7 +135,7 @@ export default class ArticleMetadata extends React.Component<IArticleMetadataPro
 
   private fetchProperties({ list, pageItem, supportedFieldTypes }: IArticleMetadataProps, { }: IArticleMetadataState) {
     Promise.all([
-      list.fields.filter(`Group eq '${this.props.groupName}'`).get(),
+      list.fields.filter(`Group eq '${this.props.properties.groupName}'`).get(),
       pageItem.get(),
     ])
       .then(([listFields, pageListItem]) => {

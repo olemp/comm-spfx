@@ -3,25 +3,36 @@
   "id": "56d445e7-d88d-453c-a527-ebed9c4f28ac",
   "alias": "ArticleMetadataWebPart",
   "componentType": "WebPart",
-
   // The "*" signifies that the version should be taken from the package.json
   "version": "*",
   "manifestVersion": 2,
-
   // If true, the component can only be installed on sites where Custom Script is allowed.
   // Components that allow authors to embed arbitrary script code should set this to true.
   // https://support.office.com/en-us/article/Turn-scripting-capabilities-on-or-off-1f2c515f-5d7e-448a-9fd7-835da935584f
   "requiresCustomScript": false,
-
-  "preconfiguredEntries": [{
-    "groupId": "56d445e7-d88d-453c-a527-ebed9c4f28ac",
-    "group": { "default": "Beta" },
-    "title": { "default": "Artikkelinformasjon" },
-    "description": { "default": "Visning og redigering av artikkelmetadata" },
-    "officeFabricIconFontName": "Articles",
-    "properties": {
-      "headerText": "Artikkelinformasjon",
-      "groupName": "News"
+  "preconfiguredEntries": [
+    {
+      "groupId": "56d445e7-d88d-453c-a527-ebed9c4f28ac",
+      "group": {
+        "default": "Beta"
+      },
+      "title": {
+        "default": "Artikkelinformasjon"
+      },
+      "description": {
+        "default": "Visning og redigering av artikkelmetadata"
+      },
+      "officeFabricIconFontName": "Articles",
+      "properties": {
+        "headerText": "Artikkelinformasjon",
+        "groupName": "News",
+        "boxShadow": true,
+        "useThemeColors": true,
+        "columnPadding": 30,
+        "headerTextSize": "ms-font-xxl",
+        "labelSize": "ms-font-xl",
+        "valueSize": "ms-font-m"
+      }
     }
-  }]
+  ]
 }

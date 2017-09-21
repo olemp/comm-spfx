@@ -17,7 +17,14 @@ export default class MetadataProperty extends React.Component<IMetadataPropertyP
   }
 
   public render() {
-    const { prop, displayMode, onChange } = this.props;
+    const {
+      prop,
+      labelSize,
+      valueSize,
+      displayMode,
+      onChange,
+     } = this.props;
+
     let value = null;
     if (displayMode === DisplayMode.Read) {
       switch (prop.fieldType) {
@@ -92,9 +99,10 @@ export default class MetadataProperty extends React.Component<IMetadataPropertyP
     }
     return (
       <div className={`ms-Grid-row ${styles.row}`}>
-        <div className='ms-Grid-col ms-lg10 ms-xl8 ms-xlPush2 ms-lgPush1'>
-          <div className='ms-font-xl'>{prop.title}</div>
-          <div className='ms-font-m'>{value}</div>
+        <div className={`ms-Grid-col ms-sm12 ${styles.column}`}
+          style={{ padding: this.props.columnPadding }}>
+          <div className={labelSize}>{prop.title}</div>
+          <div className={valueSize}>{value}</div>
         </div>
       </div>
     );

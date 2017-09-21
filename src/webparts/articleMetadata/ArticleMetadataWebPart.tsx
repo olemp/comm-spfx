@@ -11,10 +11,13 @@ import {
   PropertyPaneTextField,
   PropertyPaneDropdown,
   PropertyPaneToggle,
+  PropertyPaneSlider,
+  IPropertyPaneDropdownOption,
 } from '@microsoft/sp-webpart-base';
 import pnp, { List, Item, LogLevel, ConsoleListener } from 'sp-pnp-js';
 import * as strings from 'ArticleMetadataWebPartStrings';
 import ArticleMetadata from './components/ArticleMetadata';
+import FontSizeOptions from './config/FontSizeOptions';
 import { IArticleMetadataProps } from './components/IArticleMetadataProps';
 import { IArticleMetadataWebPartProps } from './IArticleMetadataWebPartProps';
 
@@ -24,25 +27,14 @@ export default class ArticleMetadataWebPart extends BaseClientSideWebPart<IArtic
   private fieldGroups: any[] = [];
 
   public render(): void {
-    if (this.displayMode === DisplayMode.Read && !this.properties.showInReadMode) {
-      return;
-    }
-
-    const {
-      headerText,
-      groupName,
-      showInReadMode,
-    } = this.properties;
-
     const element: React.ReactElement<IArticleMetadataProps> = React.createElement(
       ArticleMetadata,
       {
-        title: headerText,
-        groupName,
         displayMode: this.displayMode,
         list: this.list,
         pageItem: this.pageItem,
         supportedFieldTypes: ["text", "choice", "multichoice", "boolean"],
+        properties: this.properties,
       },
     );
     ReactDom.render(element, this.domElement);
@@ -86,7 +78,7 @@ export default class ArticleMetadataWebPart extends BaseClientSideWebPart<IArtic
         {
           groups: [
             {
-              groupName: 'Innstillinger',
+              groupName: 'Generelt',
               groupFields: [
                 PropertyPaneTextField('headerText', {
                   label: 'Overskrift',
@@ -100,6 +92,35 @@ export default class ArticleMetadataWebPart extends BaseClientSideWebPart<IArtic
                 }),
                 PropertyPaneToggle('showInReadMode', {
                   label: "Vis i lesemodus",
+                }),
+              ]
+            },
+            {
+              groupName: 'Utseende',
+              groupFields: [
+                PropertyPaneSlider('columnPadding', {
+                  label: "Padding",
+                  min: 20,
+                  max: 60,
+                  step: 1,
+                }),
+                PropertyPaneDropdown('headerTextSize', {
+                  label: 'Fontstørrelse for overskrift',
+                  options: FontSizeOptions,
+                }),
+                PropertyPaneDropdown('labelSize', {
+                  label: 'Fontstørrelse for etikett',
+                  options: FontSizeOptions,
+                }),
+                PropertyPaneDropdown('valueSize', {
+                  label: 'Fontstørrelse for verdi',
+                  options: FontSizeOptions,
+                }),
+                PropertyPaneToggle('useThemeColors', {
+                  label: "Bruk temafarger",
+                }),
+                PropertyPaneToggle('boxShadow', {
+                  label: "Vis skygge rundt boksen",
                 })
               ]
             }
