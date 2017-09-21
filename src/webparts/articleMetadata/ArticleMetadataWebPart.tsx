@@ -1,3 +1,4 @@
+import { } from '@microsoft/sp-core-library/lib/DisplayMode';
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
 import * as unique from 'array-unique';
@@ -14,8 +15,8 @@ import {
   PropertyPaneSlider,
   IPropertyPaneDropdownOption,
 } from '@microsoft/sp-webpart-base';
-import pnp, { List, Item, LogLevel, ConsoleListener } from 'sp-pnp-js';
-import * as strings from 'ArticleMetadataWebPartStrings';
+import pnp, { List, Item, Logger, LogLevel, ConsoleListener } from 'sp-pnp-js';
+import PropertyPane from "./config/PropertyPane";
 import ArticleMetadata from './components/ArticleMetadata';
 import FontSizeOptions from './config/FontSizeOptions';
 import { IArticleMetadataProps } from './components/IArticleMetadataProps';
@@ -27,6 +28,7 @@ export default class ArticleMetadataWebPart extends BaseClientSideWebPart<IArtic
   private fieldGroups: any[] = [];
 
   public render(): void {
+    Logger.log({ message: `Updating page`, data: { DisplayMode, properties: this.properties }, level: LogLevel.Info });
     const element: React.ReactElement<IArticleMetadataProps> = React.createElement(
       ArticleMetadata,
       {
@@ -73,60 +75,6 @@ export default class ArticleMetadataWebPart extends BaseClientSideWebPart<IArtic
   }
 
   protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
-    return {
-      pages: [
-        {
-          groups: [
-            {
-              groupName: 'Generelt',
-              groupFields: [
-                PropertyPaneTextField('headerText', {
-                  label: 'Overskrift',
-                }),
-                PropertyPaneDropdown('groupName', {
-                  label: 'Gruppenavn',
-                  options: this.fieldGroups.map(grp => ({
-                    key: grp,
-                    text: grp,
-                  }))
-                }),
-                PropertyPaneToggle('showInReadMode', {
-                  label: "Vis i lesemodus",
-                }),
-              ]
-            },
-            {
-              groupName: 'Utseende',
-              groupFields: [
-                PropertyPaneSlider('columnPadding', {
-                  label: "Padding",
-                  min: 20,
-                  max: 60,
-                  step: 1,
-                }),
-                PropertyPaneDropdown('headerTextSize', {
-                  label: 'Fontstørrelse for overskrift',
-                  options: FontSizeOptions,
-                }),
-                PropertyPaneDropdown('labelSize', {
-                  label: 'Fontstørrelse for etikett',
-                  options: FontSizeOptions,
-                }),
-                PropertyPaneDropdown('valueSize', {
-                  label: 'Fontstørrelse for verdi',
-                  options: FontSizeOptions,
-                }),
-                PropertyPaneToggle('useThemeColors', {
-                  label: "Bruk temafarger",
-                }),
-                PropertyPaneToggle('boxShadow', {
-                  label: "Vis skygge rundt boksen",
-                })
-              ]
-            }
-          ]
-        }
-      ]
-    };
+    return PropertyPane(this.fieldGroups);
   }
 }

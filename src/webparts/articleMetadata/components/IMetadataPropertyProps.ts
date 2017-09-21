@@ -5,7 +5,7 @@ export default interface IMetadataPropertyProps {
     prop: ArticleMetadataProperty;
     labelSize: string;
     valueSize: string;
-    columnPadding: number;
+    padding: number;
     displayMode: DisplayMode;
     onChange: (prop: ArticleMetadataProperty, value: any, additionalParams?: any) => void;
 }

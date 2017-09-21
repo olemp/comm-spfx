@@ -98,9 +98,9 @@ export default class MetadataProperty extends React.Component<IMetadataPropertyP
       }
     }
     return (
-      <div className={`ms-Grid-row ${styles.row}`}>
-        <div className={`ms-Grid-col ms-sm12 ${styles.column}`}
-          style={{ padding: this.props.columnPadding }}>
+      <div className={`ms-Grid-row ${styles.row}`}
+        style={{ padding: this.props.padding }}>
+        <div className={`ms-Grid-col ms-sm12 ${styles.column}`}>
           <div className={labelSize}>{prop.title}</div>
           <div className={valueSize}>{value}</div>
         </div>

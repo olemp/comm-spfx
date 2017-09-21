@@ -12,6 +12,6 @@
   },
   "externals": {},
   "localizedResources": {
-    "ArticleMetadataWebPartStrings": "lib/webparts/articleMetadata/loc/{locale}.js"
+    "ArticleMetadataWebPartStrings": "lib/webparts/articleMetadata/loc/nb-no.js"
   }
 }

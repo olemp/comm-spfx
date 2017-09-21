@@ -16,19 +16,20 @@
       "group": {
         "default": "Beta"
       },
-      "title": {
+      "title": {      
         "default": "Artikkelinformasjon"
       },
-      "description": {
+      "description": {      
         "default": "Visning og redigering av artikkelmetadata"
       },
       "officeFabricIconFontName": "Articles",
       "properties": {
         "headerText": "Artikkelinformasjon",
         "groupName": "News",
+        "showInReadMode": true,
         "boxShadow": true,
         "useThemeColors": true,
-        "columnPadding": 30,
+        "rowPadding": 20,
         "headerTextSize": "ms-font-xxl",
         "labelSize": "ms-font-xl",
         "valueSize": "ms-font-m"

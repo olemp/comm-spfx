@@ -47,9 +47,9 @@ export default class ArticleMetadata extends React.Component<IArticleMetadataPro
       <div className={styles.articleMetadata}>
         <div className={containerClassName.join(" ")}
           style={containerStyle}>
-          <div className={`ms-Grid-row ${styles.row}`}>
-            <div className={`ms-Grid-col ms-sm12 ${styles.column}`}
-              style={{ padding: this.props.properties.columnPadding }}>
+          <div className={`ms-Grid-row ${styles.row}`}
+            style={{ padding: this.props.properties.rowPadding }}>
+            <div className={`ms-Grid-col ms-sm12 ${styles.column}`}>
               <div className={this.props.properties.headerTextSize}>{this.props.properties.headerText}</div>
             </div>
           </div>
@@ -61,7 +61,7 @@ export default class ArticleMetadata extends React.Component<IArticleMetadataPro
               onChange={this.onPropertyChange}
               labelSize={this.props.properties.labelSize}
               valueSize={this.props.properties.valueSize}
-              columnPadding={this.props.properties.columnPadding} />
+              padding={this.props.properties.rowPadding} />
           ))}
         </div>
       </div >

@@ -9,8 +9,7 @@
     "build": "gulp bundle",
     "clean": "gulp clean",
     "test": "gulp test",
-    "deploy": "gulp clean && gulp bundle --ship && gulp package-solution --ship && gulp upload-to-sharepoint --ship && gulp upload-app-pkg --ship && gulp deploy-sppkg --ship",
-    "update-assets": "gulp clean && gulp bundle --ship && gulp upload-to-sharepoint --ship"
+    "deploy": "gulp clean && gulp bundle --ship --locale=no-nb && gulp package-solution --ship --locale=no-nb && gulp upload-to-sharepoint --ship --locale=no-nb && gulp upload-app-pkg --ship --locale=no-nb && gulp deploy-sppkg --ship --locale=no-nb"
   },
   "dependencies": {
     "@microsoft/sp-core-library": "~1.2.0",

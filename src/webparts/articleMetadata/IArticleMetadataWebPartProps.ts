@@ -7,5 +7,5 @@ export interface IArticleMetadataWebPartProps {
   headerTextSize: string;
   labelSize: string;
   valueSize: string;
-  columnPadding: number;
+  rowPadding: number;
 }
