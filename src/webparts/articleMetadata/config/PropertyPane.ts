@@ -40,7 +40,7 @@ const propertyPane = (fieldGroups: string[]) => ({
                     groupFields: [
                         PropertyPaneSlider('rowPadding', {
                             label: strings.propertyPaneSettingLabelRowPadding,
-                            min: 20,
+                            min: 5,
                             max: 60,
                             step: 1,
                         }),

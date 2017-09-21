@@ -5,7 +5,7 @@ define([], function () {
     propertyPaneSettingLabelHeaderText: 'Overskrift',
     propertyPaneSettingLabelGroupName: 'Gruppenavn',
     propertyPaneSettingLabelShowInReadMode: 'Vis i lesemodus',
-    propertyPaneSettingLabelRowPadding: 'Padding',
+    propertyPaneSettingLabelRowPadding: 'Innrykk',
     propertyPaneSettingLabelHeaderTextSize: 'Fontstørrelse for overskrift',
     propertyPaneSettingLabelLabelSize: 'Fontstørrelse for etikett',
     propertyPaneSettingLabelValueSize: 'Fontstørrelse for verdi',
