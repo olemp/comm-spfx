@@ -4,7 +4,7 @@ export enum FieldValueType {
   Html,
 }
 
-export class ArticleMetadataProperty  {
+export class ArticleMetadataProperty {
   public fieldType: string;
   public fieldName: string;
   public title: string;
@@ -13,16 +13,11 @@ export class ArticleMetadataProperty  {
   private value: any[];
 
   constructor(field, listItem) {
-    console.log(listItem);
     this.fieldType = field.TypeAsString.toLowerCase();
     this.fieldName = field.InternalName;
     this.title = field.Title;
     this.choices = field.Choices;
     this.termSetId = field.TermSetId;
-    this.setValue(listItem);
-  }
-
-  private setValue(listItem) {
     this.value = [
       listItem[this.fieldName],
       listItem.FieldValuesAsText[this.fieldName],
@@ -30,18 +25,21 @@ export class ArticleMetadataProperty  {
     ];
   }
 
+  public setValue(value): void {
+    this.value[0] = value;
+  }
+
   public getValue<T>(type = FieldValueType.Normal): T {
-    console.log(type.toFixed());
-    return this.value[0] as T;
+    return this.value[type.toFixed()] as T;
   }
 
   public getValueForUpdate() {
     switch (this.fieldType) {
       case "multichoice": {
-        return { __metadata: { type: "Collection(Edm.String)" }, results: this.value };
+        return { __metadata: { type: "Collection(Edm.String)" }, results: this.value[0] };
       }
       default: {
-        return this.value;
+        return this.value[0];
       }
     }
   }
@@ -52,5 +50,4 @@ export interface IArticleMetadataState {
   listFields?: any[];
   pageListItem?: any;
   properties: ArticleMetadataProperty[];
-  terms?: any[];
 }

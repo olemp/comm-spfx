@@ -93,7 +93,7 @@ export default class ArticleMetadata extends React.Component<IArticleMetadataPro
     Logger.log({ message: `ArticleMetadata: onPropertyChange() - Property ${propChanged.fieldName} was changed`, data: { propChanged, value }, level: LogLevel.Info });
     switch (propChanged.fieldType) {
       case "multichoice": {
-        let newValue = [].concat(propChanged.value || []);
+        let newValue = [].concat(propChanged.getValue<string>() || []);
         if (additionalParams.checked) {
           newValue.push(value);
         } else {
@@ -105,7 +105,7 @@ export default class ArticleMetadata extends React.Component<IArticleMetadataPro
         this.setState({
           properties: this.state.properties.map(prop => {
             if (propChanged.fieldName === prop.fieldName) {
-              propChanged.value = newValue;
+              propChanged.setValue(newValue);
               return propChanged;
             }
             return prop;
@@ -117,7 +117,7 @@ export default class ArticleMetadata extends React.Component<IArticleMetadataPro
         this.setState({
           properties: this.state.properties.map(prop => {
             if (propChanged.fieldName === prop.fieldName) {
-              propChanged.value = value;
+              propChanged.setValue(value);
               return propChanged;
             }
             return prop;
