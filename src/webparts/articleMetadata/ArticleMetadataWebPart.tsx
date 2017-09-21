@@ -28,7 +28,7 @@ export default class ArticleMetadataWebPart extends BaseClientSideWebPart<IArtic
   private fieldGroups: any[] = [];
 
   public render(): void {
-    Logger.log({ message: `Updating page`, data: { DisplayMode, properties: this.properties }, level: LogLevel.Info });
+    Logger.log({ message: `ArticleMetadataWebPart: render()`, data: { displayMode: this.displayMode, properties: this.properties }, level: LogLevel.Info });
     const element: React.ReactElement<IArticleMetadataProps> = React.createElement(
       ArticleMetadata,
       {
@@ -43,6 +43,7 @@ export default class ArticleMetadataWebPart extends BaseClientSideWebPart<IArtic
   }
 
   public onInit(): Promise<void> {
+    Logger.log({ message: `ArticleMetadataWebPart: onInit()`, data: {}, level: LogLevel.Info });
     return new Promise<void>((resolve, reject) => {
       pnp.log.activeLogLevel = LogLevel.Info;
       pnp.log.subscribe(new ConsoleListener());
@@ -66,6 +67,7 @@ export default class ArticleMetadataWebPart extends BaseClientSideWebPart<IArtic
   }
 
   private getPropertyPaneData(): Promise<void> {
+    Logger.log({ message: `ArticleMetadataWebPart: getPropertyPaneData()`, data: {}, level: LogLevel.Info });
     return new Promise<void>((resolve, reject) => {
       this.list.fields.get().then(fields => {
         this.fieldGroups = unique(fields.map(f => f.Group));
@@ -75,6 +77,7 @@ export default class ArticleMetadataWebPart extends BaseClientSideWebPart<IArtic
   }
 
   protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
+    Logger.log({ message: `ArticleMetadataWebPart: getPropertyPaneConfiguration()`, data: {}, level: LogLevel.Info });
     return PropertyPane(this.fieldGroups);
   }
 }
