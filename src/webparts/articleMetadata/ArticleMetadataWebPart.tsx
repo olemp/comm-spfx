@@ -23,6 +23,7 @@ import { IArticleMetadataProps } from './components/IArticleMetadataProps';
 import { IArticleMetadataWebPartProps } from './IArticleMetadataWebPartProps';
 
 export default class ArticleMetadataWebPart extends BaseClientSideWebPart<IArticleMetadataWebPartProps> {
+  private supportedFieldTypes = ["text", "choice", "multichoice", "boolean"];
   private list: List;
   private pageItem: Item;
   private fieldGroups: any[] = [];
@@ -35,7 +36,7 @@ export default class ArticleMetadataWebPart extends BaseClientSideWebPart<IArtic
         displayMode: this.displayMode,
         list: this.list,
         pageItem: this.pageItem,
-        supportedFieldTypes: ["text", "choice", "multichoice", "boolean"],
+        supportedFieldTypes: this.supportedFieldTypes,
         properties: this.properties,
       },
     );
@@ -77,7 +78,7 @@ export default class ArticleMetadataWebPart extends BaseClientSideWebPart<IArtic
   }
 
   protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {
-    Logger.log({ message: `ArticleMetadataWebPart: getPropertyPaneConfiguration()`, data: {}, level: LogLevel.Info });
+    Logger.log({ message: `ArticleMetadataWebPart: getPropertyPaneConfiguration()`, data: { fieldGroups: this.fieldGroups }, level: LogLevel.Info });
     return PropertyPane(this.fieldGroups);
   }
 }

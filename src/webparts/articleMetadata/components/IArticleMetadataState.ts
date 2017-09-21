@@ -15,13 +15,14 @@ export class ArticleMetadataProperty implements IArticleMetadataProperty {
   public choices: string[];
   public termSetId: string;
 
-  constructor(field, value) {
+  constructor(field, listItem) {
+    console.log(listItem);
     this.fieldType = field.TypeAsString.toLowerCase();
     this.fieldName = field.InternalName;
     this.title = field.Title;
-    this.value = value;
     this.choices = field.Choices;
     this.termSetId = field.TermSetId;
+    this.value = listItem[this.fieldName];
   }
 
   public getValueForUpdate() {

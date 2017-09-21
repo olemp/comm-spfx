@@ -29,7 +29,11 @@ export default class ArticleMetadata extends React.Component<IArticleMetadataPro
   }
 
   public render(): React.ReactElement<IArticleMetadataProps> {
-    if (this.props.displayMode === DisplayMode.Read && !this.props.properties.showInReadMode) {
+    const inReadMode = this.props.displayMode === DisplayMode.Read;
+
+    Logger.log({ message: `ArticleMetadata: render()`, data: { inReadMode }, level: LogLevel.Info });
+
+    if (inReadMode && !this.props.properties.showInReadMode) {
       return null;
     }
     if (this.state.isLoading) {
@@ -37,10 +41,10 @@ export default class ArticleMetadata extends React.Component<IArticleMetadataPro
     }
     let containerClassName = [styles.container];
     let containerStyle: React.CSSProperties = {};
-    if (this.props.properties.boxShadow) {
+    if (this.props.properties.boxShadow && inReadMode) {
       containerStyle.boxShadow = "0 2px 4px 0 rgba(0, 0, 0, 0.2), 0 25px 50px 0 rgba(0, 0, 0, 0.1)";
     }
-    if (this.props.properties.useThemeColors && this.props.displayMode === DisplayMode.Read) {
+    if (this.props.properties.useThemeColors && inReadMode) {
       containerClassName.push(styles.themeColors);
     }
     return (
@@ -73,20 +77,20 @@ export default class ArticleMetadata extends React.Component<IArticleMetadataPro
     properties.forEach(prop => {
       values[prop.fieldName] = prop.getValueForUpdate();
     });
-    Logger.log({ message: `Updating page`, data: values, level: LogLevel.Info });
+    Logger.log({ message: `ArticleMetadata: onSaveChanges()`, data: { values }, level: LogLevel.Info });
     pageItem.update(values)
-      .then(() => {
-        Logger.log({ message: `Successfully updated page`, data: {}, level: LogLevel.Info });
+      .then(updateResult => {
+        Logger.log({ message: `ArticleMetadata: onSaveChanges() - Successfully updated page`, data: { updateResult }, level: LogLevel.Info });
         resolve();
       })
       .catch(err => {
-        Logger.log({ message: `Failed to update page`, data: { err }, level: LogLevel.Error });
+        Logger.log({ message: `ArticleMetadata: onSaveChanges() - Failed to update page`, data: { err }, level: LogLevel.Error });
         reject();
       });
   })
 
   private onPropertyChange = (propChanged: ArticleMetadataProperty, value: any, additionalParams?: any) => {
-    Logger.log({ message: `Property ${propChanged.fieldName} was changed`, data: { propChanged, value }, level: LogLevel.Info });
+    Logger.log({ message: `ArticleMetadata: onPropertyChange() - Property ${propChanged.fieldName} was changed`, data: { propChanged, value }, level: LogLevel.Info });
     switch (propChanged.fieldType) {
       case "multichoice": {
         let newValue = [].concat(propChanged.value || []);
@@ -124,24 +128,28 @@ export default class ArticleMetadata extends React.Component<IArticleMetadataPro
   }
 
   public componentDidUpdate(prevProps: IArticleMetadataProps, prevState: IArticleMetadataState, prevContext: any) {
+    Logger.log({ message: `ArticleMetadata: componentDidUpdate()`, data: {}, level: LogLevel.Info });
     if (prevProps.displayMode === DisplayMode.Edit && this.props.displayMode === DisplayMode.Read) {
       this.onSaveChanges(this.props, this.state).then(result => this.fetchProperties(this.props, this.state));
     }
   }
 
   public componentDidMount() {
+    Logger.log({ message: `ArticleMetadata: componentDidMount()`, data: {}, level: LogLevel.Info });
     this.fetchProperties(this.props, this.state);
   }
 
   private fetchProperties({ list, pageItem, supportedFieldTypes }: IArticleMetadataProps, { }: IArticleMetadataState) {
+    Logger.log({ message: `ArticleMetadata: fetchProperties()`, data: { groupName: this.props.properties.groupName }, level: LogLevel.Info });
     Promise.all([
       list.fields.filter(`Group eq '${this.props.properties.groupName}'`).get(),
-      pageItem.get(),
+      pageItem.expand("FieldValuesAsHtml", "FieldValuesAsText").get(),
     ])
       .then(([listFields, pageListItem]) => {
         let properties = listFields
-          .map(fld => new ArticleMetadataProperty(fld, pageListItem[fld.InternalName]))
+          .map(fld => new ArticleMetadataProperty(fld, pageListItem))
           .filter(prop => supportedFieldTypes.indexOf(prop.fieldType) !== -1);
+        Logger.log({ message: `ArticleMetadata: fetchProperties() - Successfully retrieved and parsed properties`, data: { properties }, level: LogLevel.Info });
         this.setState({
           listFields,
           pageListItem,
@@ -150,7 +158,7 @@ export default class ArticleMetadata extends React.Component<IArticleMetadataPro
         });
       })
       .catch(err => {
-        Logger.log({ message: `Failed to fetch properties`, data: { err }, level: LogLevel.Error });
+        Logger.log({ message: `ArticleMetadata: fetchProperties() - Failed to fetch properties`, data: { err }, level: LogLevel.Error });
       });
   }
 }

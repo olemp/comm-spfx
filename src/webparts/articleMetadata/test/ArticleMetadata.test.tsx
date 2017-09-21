@@ -16,6 +16,7 @@ describe('ArticleMetadata in Read Mode', () => {
     let fetchPropertiesSpy;
     let renderedElement;
 
+    // Props for ArticleMetadata
     let list = pnp.sp.web.lists.getById("caf15ef9-de66-45a4-87ed-bea9dbe54ddd");
     let pageItem = list.items.getById(9);
 
