@@ -1,19 +1,16 @@
-export interface IArticleMetadataProperty {
-  fieldType: string;
-  fieldName: string;
-  title: string;
-  value: any;
-  choices: string[];
-  termSetId: string;
+export enum FieldValueType {
+  Normal,
+  Text,
+  Html,
 }
 
-export class ArticleMetadataProperty implements IArticleMetadataProperty {
+export class ArticleMetadataProperty  {
   public fieldType: string;
   public fieldName: string;
   public title: string;
-  public value: any;
   public choices: string[];
   public termSetId: string;
+  private value: any[];
 
   constructor(field, listItem) {
     console.log(listItem);
@@ -22,7 +19,20 @@ export class ArticleMetadataProperty implements IArticleMetadataProperty {
     this.title = field.Title;
     this.choices = field.Choices;
     this.termSetId = field.TermSetId;
-    this.value = listItem[this.fieldName];
+    this.setValue(listItem);
+  }
+
+  private setValue(listItem) {
+    this.value = [
+      listItem[this.fieldName],
+      listItem.FieldValuesAsText[this.fieldName],
+      listItem.FieldValuesAsHtml[this.fieldName]
+    ];
+  }
+
+  public getValue<T>(type = FieldValueType.Normal): T {
+    console.log(type.toFixed());
+    return this.value[0] as T;
   }
 
   public getValueForUpdate() {

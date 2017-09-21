@@ -29,13 +29,13 @@ export default class MetadataProperty extends React.Component<IMetadataPropertyP
     if (displayMode === DisplayMode.Read) {
       switch (prop.fieldType) {
         case 'boolean': {
-          value = prop.value ? 'Ja' : 'Nei';
+          value = prop.getValue<boolean>() ? 'Ja' : 'Nei';
         }
           break;
         case 'multichoice': {
           value = (
             <ul className={styles.multiChoiceList}>
-              {(prop.value || []).map(choice => (
+              {(prop.getValue<string[]>() || []).map(choice => (
                 <li className={styles.multiChoiceListItem}>
                   <span>{choice}</span>
                 </li>
@@ -45,7 +45,7 @@ export default class MetadataProperty extends React.Component<IMetadataPropertyP
         }
           break;
         default: {
-          value = prop.value;
+          value = prop.getValue<any>();
         }
       }
     }
@@ -55,14 +55,14 @@ export default class MetadataProperty extends React.Component<IMetadataPropertyP
           value = (
             <TextField
               onChanged={newValue => onChange(prop, newValue)}
-              value={prop.value} />
+              value={prop.getValue<string>()} />
           );
         }
           break;
         case 'choice': {
           value = (
             <Dropdown
-              selectedKey={prop.value}
+              selectedKey={prop.getValue()}
               onChanged={option => onChange(prop, option.text)}
               options={prop.choices.map(choice => ({
                 key: choice,
@@ -78,7 +78,7 @@ export default class MetadataProperty extends React.Component<IMetadataPropertyP
                 <div className={styles.multiChoiceOptionContainer}>
                   <Checkbox
                     label={choice}
-                    defaultChecked={prop.value.indexOf(choice) !== -1}
+                    defaultChecked={prop.getValue<string[]>().indexOf(choice) !== -1}
                     onChange={(e, checked) => onChange(prop, choice, { checked })}
                   />
                 </div>
@@ -90,7 +90,7 @@ export default class MetadataProperty extends React.Component<IMetadataPropertyP
         case 'boolean': {
           value = (
             <Toggle
-              checked={prop.value}
+              checked={prop.getValue<boolean>()}
               onChanged={option => onChange(prop, option)} />
           );
         }
