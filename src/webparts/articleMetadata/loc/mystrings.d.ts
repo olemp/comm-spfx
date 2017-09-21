@@ -1,5 +1,6 @@
 declare interface IArticleMetadataWebPartStrings {
   propertyPaneGroupNameGeneral: string;
+  propertyPaneGroupNameFieldTypes: string;
   propertyPaneGroupNameLookAndFeel: string;
   propertyPaneSettingLabelHeaderText: string;
   propertyPaneSettingLabelGroupName: string;
@@ -10,6 +11,10 @@ declare interface IArticleMetadataWebPartStrings {
   propertyPaneSettingLabelValueSize: string;
   propertyPaneSettingLabelUseThemeColors: string;
   propertyPaneSettingLabelBoxShadow: string;
+  propertyPaneSettingLabelFieldTypeTextEnabled: string;
+  propertyPaneSettingLabelFieldTypeChoiceEnabled: string;
+  propertyPaneSettingLabelFieldTypeMultiChoiceEnabled: string;
+  propertyPaneSettingLabelFieldTypeBooleanEnabled: string;
 }
 
 declare module 'ArticleMetadataWebPartStrings' {

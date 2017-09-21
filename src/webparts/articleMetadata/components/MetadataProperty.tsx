@@ -18,6 +18,7 @@ export default class MetadataProperty extends React.Component<IMetadataPropertyP
 
   public render() {
     const {
+      className,
       prop,
       labelSize,
       valueSize,
@@ -35,9 +36,11 @@ export default class MetadataProperty extends React.Component<IMetadataPropertyP
         case 'multichoice': {
           value = (
             <ul className={styles.multiChoiceList}>
-              {(prop.getValue<string[]>() || []).map(choice => (
-                <li className={styles.multiChoiceListItem}>
-                  <span>{choice}</span>
+              {(prop.getValue<string[]>() || []).map((v, key) => (
+                <li
+                  key={`${v}_${key}`}
+                  className={styles.multiChoiceListItem}>
+                  <span>{v}</span>
                 </li>
               ))}
             </ul>
@@ -74,12 +77,14 @@ export default class MetadataProperty extends React.Component<IMetadataPropertyP
         case 'multichoice': {
           value = (
             <div>
-              {prop.choices.map(choice => (
-                <div className={styles.multiChoiceOptionContainer}>
+              {prop.choices.map((c, key) => (
+                <div
+                  key={`${c}_${key}`}
+                  className={styles.multiChoiceOptionContainer}>
                   <Checkbox
-                    label={choice}
-                    defaultChecked={prop.getValue<string[]>().indexOf(choice) !== -1}
-                    onChange={(e, checked) => onChange(prop, choice, { checked })}
+                    label={c}
+                    defaultChecked={prop.getValue<string[]>().indexOf(c) !== -1}
+                    onChange={(e, checked) => onChange(prop, c, { checked })}
                   />
                 </div>
               ))}
@@ -98,11 +103,11 @@ export default class MetadataProperty extends React.Component<IMetadataPropertyP
       }
     }
     return (
-      <div className={`ms-Grid-row ${styles.row}`}
+      <div className={`ms-Grid-row ${className} ${styles.row} ${prop.fieldName.toLowerCase()} ${className}-${prop.fieldType}`}
         style={{ padding: this.props.padding }}>
         <div className={`ms-Grid-col ms-sm12 ${styles.column}`}>
-          <div className={labelSize}>{prop.title}</div>
-          <div className={valueSize}>{value}</div>
+          <div className={`${labelSize} ${className}-label`}>{prop.title}</div>
+          <div className={`${valueSize} ${className}-value`}>{value}</div>
         </div>
       </div>
     );

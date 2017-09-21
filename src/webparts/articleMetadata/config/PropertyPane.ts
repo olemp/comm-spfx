@@ -36,6 +36,23 @@ const propertyPane = (fieldGroups: string[]) => ({
                     ]
                 },
                 {
+                    groupName: strings.propertyPaneGroupNameFieldTypes,
+                    groupFields: [
+                        PropertyPaneToggle('fieldTypeTextEnabled', {
+                            label: strings.propertyPaneSettingLabelFieldTypeTextEnabled,
+                        }),
+                        PropertyPaneToggle('fieldTypeChoiceEnabled', {
+                            label: strings.propertyPaneSettingLabelFieldTypeChoiceEnabled,
+                        }),
+                        PropertyPaneToggle('fieldTypeMultiChoiceEnabled', {
+                            label: strings.propertyPaneSettingLabelFieldTypeMultiChoiceEnabled,
+                        }),
+                        PropertyPaneToggle('fieldTypeBooleanEnabled', {
+                            label: strings.propertyPaneSettingLabelFieldTypeBooleanEnabled,
+                        })
+                    ]
+                },
+                {
                     groupName: strings.propertyPaneGroupNameLookAndFeel,
                     groupFields: [
                         PropertyPaneSlider('rowPadding', {

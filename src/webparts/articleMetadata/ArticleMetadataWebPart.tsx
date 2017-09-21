@@ -23,7 +23,6 @@ import { IArticleMetadataProps } from './components/IArticleMetadataProps';
 import { IArticleMetadataWebPartProps } from './IArticleMetadataWebPartProps';
 
 export default class ArticleMetadataWebPart extends BaseClientSideWebPart<IArticleMetadataWebPartProps> {
-  private supportedFieldTypes = ["text", "choice", "multichoice", "boolean"];
   private list: List;
   private pageItem: Item;
   private fieldGroups: any[] = [];
@@ -36,7 +35,7 @@ export default class ArticleMetadataWebPart extends BaseClientSideWebPart<IArtic
         displayMode: this.displayMode,
         list: this.list,
         pageItem: this.pageItem,
-        supportedFieldTypes: this.supportedFieldTypes,
+        fieldTypes: this.getFieldTypes(),
         properties: this.properties,
       },
     );
@@ -75,6 +74,30 @@ export default class ArticleMetadataWebPart extends BaseClientSideWebPart<IArtic
         resolve();
       });
     });
+  }
+
+  private getFieldTypes(): string[] {
+    const {
+      fieldTypeTextEnabled,
+      fieldTypeChoiceEnabled,
+      fieldTypeMultiChoiceEnabled,
+      fieldTypeBooleanEnabled,
+    } = this.properties;
+
+    let fieldTypes = [];
+    if (fieldTypeTextEnabled) {
+      fieldTypes.push("text");
+    }
+    if (fieldTypeChoiceEnabled) {
+      fieldTypes.push("choice");
+    }
+    if (fieldTypeMultiChoiceEnabled) {
+      fieldTypes.push("multichoice");
+    }
+    if (fieldTypeBooleanEnabled) {
+      fieldTypes.push("boolean");
+    }
+    return fieldTypes;
   }
 
   protected getPropertyPaneConfiguration(): IPropertyPaneConfiguration {

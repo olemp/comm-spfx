@@ -2,6 +2,7 @@ import { DisplayMode } from '@microsoft/sp-core-library';
 import { ArticleMetadataProperty } from './IArticleMetadataState';
 
 export default interface IMetadataPropertyProps {
+    className: string;
     prop: ArticleMetadataProperty;
     labelSize: string;
     valueSize: string;

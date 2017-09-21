@@ -7,6 +7,6 @@ export interface IArticleMetadataProps {
   displayMode: DisplayMode;
   list: List;
   pageItem: Item;
-  supportedFieldTypes: string[];
+  fieldTypes: string[];
   properties?: IArticleMetadataWebPartProps;
 }

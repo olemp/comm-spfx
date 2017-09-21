@@ -9,7 +9,11 @@ import {
 import { DisplayMode } from '@microsoft/sp-core-library';
 import styles from './ArticleMetadata.module.scss';
 import { IArticleMetadataProps } from './IArticleMetadataProps';
-import { IArticleMetadataState, ArticleMetadataProperty } from './IArticleMetadataState';
+import {
+  IArticleMetadataState,
+  ArticleMetadataProperty,
+  FieldValueType,
+} from './IArticleMetadataState';
 import { escape } from '@microsoft/sp-lodash-subset';
 import {
   SPHttpClient,
@@ -60,6 +64,7 @@ export default class ArticleMetadata extends React.Component<IArticleMetadataPro
           {this.state.properties.map((prop, key) => (
             <MetadataProperty
               key={key}
+              className="property-row"
               prop={prop}
               displayMode={this.props.displayMode}
               onChange={this.onPropertyChange}
@@ -139,7 +144,7 @@ export default class ArticleMetadata extends React.Component<IArticleMetadataPro
     this.fetchProperties(this.props, this.state);
   }
 
-  private fetchProperties({ list, pageItem, supportedFieldTypes }: IArticleMetadataProps, { }: IArticleMetadataState) {
+  private fetchProperties({ list, pageItem, fieldTypes }: IArticleMetadataProps, { }: IArticleMetadataState) {
     Logger.log({ message: `ArticleMetadata: fetchProperties()`, data: { groupName: this.props.properties.groupName }, level: LogLevel.Info });
     Promise.all([
       list.fields.filter(`Group eq '${this.props.properties.groupName}'`).get(),
@@ -148,7 +153,7 @@ export default class ArticleMetadata extends React.Component<IArticleMetadataPro
       .then(([listFields, pageListItem]) => {
         let properties = listFields
           .map(fld => new ArticleMetadataProperty(fld, pageListItem))
-          .filter(prop => supportedFieldTypes.indexOf(prop.fieldType) !== -1);
+          .filter(prop => fieldTypes.indexOf(prop.fieldType) !== -1);
         Logger.log({ message: `ArticleMetadata: fetchProperties() - Successfully retrieved and parsed properties`, data: { properties }, level: LogLevel.Info });
         this.setState({
           listFields,
@@ -162,3 +167,10 @@ export default class ArticleMetadata extends React.Component<IArticleMetadataPro
       });
   }
 }
+
+export {
+  IArticleMetadataProps,
+  IArticleMetadataState,
+  ArticleMetadataProperty,
+  FieldValueType,
+};
