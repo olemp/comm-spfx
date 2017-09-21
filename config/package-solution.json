@@ -3,10 +3,11 @@
   "solution": {
     "name": "comm-spfx",
     "id": "c1a3507f-8e95-4a44-beca-fe6194a80049",
-    "version": "0.0.7.2",
+    "version": "0.0.8.8",
     "skipFeatureDeployment": true
   },
   "paths": {
     "zippedPackage": "solution/comm-spfx.sppkg"
   }
 }
+

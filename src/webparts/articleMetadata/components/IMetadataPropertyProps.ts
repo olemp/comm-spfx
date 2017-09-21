@@ -1,8 +1,8 @@
 import { DisplayMode } from '@microsoft/sp-core-library';
-import { IArticleMetadataProperty } from './IArticleMetadataState';
+import { ArticleMetadataProperty } from './IArticleMetadataState';
 
 export default interface IMetadataPropertyProps {
-    prop: IArticleMetadataProperty;
+    prop: ArticleMetadataProperty;
     displayMode: DisplayMode;
-    onChange: (prop: IArticleMetadataProperty, value: any) => void;
+    onChange: (prop: ArticleMetadataProperty, value: any, additionalParams?: any) => void;
 }

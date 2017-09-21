@@ -8,6 +8,5 @@ export interface IArticleMetadataProps {
   displayMode: DisplayMode;
   list: List;
   pageItem: Item;
-  showInReadMode: boolean;
   supportedFieldTypes: string[];
 }

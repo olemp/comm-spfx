@@ -1,7 +1,10 @@
 import * as React from 'react';
 import * as ReactDom from 'react-dom';
 import * as unique from 'array-unique';
-import { Version } from '@microsoft/sp-core-library';
+import {
+  Version,
+  DisplayMode,
+} from '@microsoft/sp-core-library';
 import {
   BaseClientSideWebPart,
   IPropertyPaneConfiguration,
@@ -21,7 +24,16 @@ export default class ArticleMetadataWebPart extends BaseClientSideWebPart<IArtic
   private fieldGroups: any[] = [];
 
   public render(): void {
-    const { headerText, groupName, showInReadMode } = this.properties;
+    if (this.displayMode === DisplayMode.Read && !this.properties.showInReadMode) {
+      return;
+    }
+
+    const {
+      headerText,
+      groupName,
+      showInReadMode,
+    } = this.properties;
+
     const element: React.ReactElement<IArticleMetadataProps> = React.createElement(
       ArticleMetadata,
       {
@@ -30,8 +42,7 @@ export default class ArticleMetadataWebPart extends BaseClientSideWebPart<IArtic
         displayMode: this.displayMode,
         list: this.list,
         pageItem: this.pageItem,
-        showInReadMode,
-        supportedFieldTypes: ["text", "choice", "boolean"],
+        supportedFieldTypes: ["text", "choice", "multichoice", "boolean"],
       },
     );
     ReactDom.render(element, this.domElement);

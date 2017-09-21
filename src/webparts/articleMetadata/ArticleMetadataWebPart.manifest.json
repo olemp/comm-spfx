@@ -15,9 +15,9 @@
 
   "preconfiguredEntries": [{
     "groupId": "56d445e7-d88d-453c-a527-ebed9c4f28ac",
-    "group": { "default": "Under Development" },
-    "title": { "default": "ArticleMetadata" },
-    "description": { "default": "ArticleMetadata description" },
+    "group": { "default": "Beta" },
+    "title": { "default": "Artikkelinformasjon" },
+    "description": { "default": "Visning og redigering av artikkelmetadata" },
     "officeFabricIconFontName": "Articles",
     "properties": {
       "headerText": "Artikkelinformasjon",

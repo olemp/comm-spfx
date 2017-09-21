@@ -28,7 +28,6 @@ describe('ArticleMetadata in Read Mode', () => {
             list={list}
             pageItem={pageItem}
             displayMode={DisplayMode.Read}
-            showInReadMode={false}
             supportedFieldTypes={["text", "choice", "boolean"]} />);
     });
 

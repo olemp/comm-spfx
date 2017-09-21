@@ -1,7 +1,4 @@
 declare interface IArticleMetadataWebPartStrings {
-  PropertyPaneDescription: string;
-  BasicGroupName: string;
-  DescriptionFieldLabel: string;
 }
 
 declare module 'ArticleMetadataWebPartStrings' {

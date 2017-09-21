@@ -2,10 +2,14 @@ import { message } from 'gulp-typescript/release/utils';
 import { } from '@microsoft/sp-core-library/lib/DisplayMode';
 import * as React from 'react';
 import { PrimaryButton } from 'office-ui-fabric-react/lib/Button';
+import {
+  Spinner,
+  SpinnerSize,
+} from 'office-ui-fabric-react/lib/Spinner';
 import { DisplayMode } from '@microsoft/sp-core-library';
 import styles from './ArticleMetadata.module.scss';
 import { IArticleMetadataProps } from './IArticleMetadataProps';
-import { IArticleMetadataState, IArticleMetadataProperty } from './IArticleMetadataState';
+import { IArticleMetadataState, ArticleMetadataProperty } from './IArticleMetadataState';
 import { escape } from '@microsoft/sp-lodash-subset';
 import {
   SPHttpClient,
@@ -19,20 +23,21 @@ export default class ArticleMetadata extends React.Component<IArticleMetadataPro
   constructor(props: IArticleMetadataProps) {
     super(props);
     this.state = {
+      isLoading: true,
       properties: [],
     };
   }
 
   public render(): React.ReactElement<IArticleMetadataProps> {
-    if (this.props.displayMode === DisplayMode.Read && !this.props.showInReadMode) {
-      return null;
+    if (this.state.isLoading) {
+      return <Spinner size={SpinnerSize.large} />;
     }
     return (
       <div className={styles.articleMetadata}>
         <div className={styles.container}>
-          <div className={`ms-Grid-row ms-bgColor-themeDark ms-fontColor-white ${styles.row}`}>
+          <div className={`ms-Grid-row ${styles.row}`}>
             <div className="ms-Grid-col ms-lg10 ms-xl8 ms-xlPush2 ms-lgPush1">
-              <div className="ms-font-xxl ms-fontColor-white">{this.props.title}</div>
+              <div className="ms-font-xxl">{this.props.title}</div>
             </div>
           </div>
           {this.state.properties.map((prop, key) => (
@@ -49,7 +54,9 @@ export default class ArticleMetadata extends React.Component<IArticleMetadataPro
 
   private onSaveChanges = ({ pageItem }: IArticleMetadataProps, { properties }: IArticleMetadataState) => new Promise<ItemUpdateResult>((resolve, reject) => {
     const values = {};
-    properties.forEach(prop => values[prop.fieldName] = prop.value);
+    properties.forEach(prop => {
+      values[prop.fieldName] = prop.getValueForUpdate();
+    });
     Logger.log({ message: `Updating page`, data: values, level: LogLevel.Info });
     pageItem.update(values)
       .then(() => {
@@ -62,19 +69,42 @@ export default class ArticleMetadata extends React.Component<IArticleMetadataPro
       });
   })
 
-  private onPropertyChange = (propChanged: IArticleMetadataProperty, value) => {
+  private onPropertyChange = (propChanged: ArticleMetadataProperty, value: any, additionalParams?: any) => {
     Logger.log({ message: `Property ${propChanged.fieldName} was changed`, data: { propChanged, value }, level: LogLevel.Info });
-    this.setState({
-      properties: this.state.properties.map(prop => {
-        if (propChanged.fieldName === prop.fieldName) {
-          return {
-            ...prop,
-            value,
-          };
+    switch (propChanged.fieldType) {
+      case "multichoice": {
+        let newValue = [].concat(propChanged.value || []);
+        if (additionalParams.checked) {
+          newValue.push(value);
+        } else {
+          let index = newValue.indexOf(value);
+          if (index > -1) {
+            newValue.splice(index, 1);
+          }
         }
-        return prop;
-      })
-    });
+        this.setState({
+          properties: this.state.properties.map(prop => {
+            if (propChanged.fieldName === prop.fieldName) {
+              propChanged.value = newValue;
+              return propChanged;
+            }
+            return prop;
+          })
+        });
+      }
+        break;
+      default: {
+        this.setState({
+          properties: this.state.properties.map(prop => {
+            if (propChanged.fieldName === prop.fieldName) {
+              propChanged.value = value;
+              return propChanged;
+            }
+            return prop;
+          })
+        });
+      }
+    }
   }
 
   public componentDidUpdate(prevProps: IArticleMetadataProps, prevState: IArticleMetadataState, prevContext: any) {
@@ -94,16 +124,14 @@ export default class ArticleMetadata extends React.Component<IArticleMetadataPro
     ])
       .then(([listFields, pageListItem]) => {
         let properties = listFields
-          .map(fld => ({
-            fieldType: fld.TypeAsString.toLowerCase(),
-            fieldName: fld.InternalName,
-            title: fld.Title,
-            value: pageListItem[fld.InternalName],
-            choices: fld.Choices,
-            termSetId: fld.TermSetId,
-          }))
+          .map(fld => new ArticleMetadataProperty(fld, pageListItem[fld.InternalName]))
           .filter(prop => supportedFieldTypes.indexOf(prop.fieldType) !== -1);
-        this.setState({ listFields, pageListItem, properties });
+        this.setState({
+          listFields,
+          pageListItem,
+          properties,
+          isLoading: false,
+        });
       })
       .catch(err => {
         Logger.log({ message: `Failed to fetch properties`, data: { err }, level: LogLevel.Error });
