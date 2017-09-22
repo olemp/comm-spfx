@@ -84,22 +84,21 @@ export default class ArticleMetadata extends React.Component<IArticleMetadataPro
     );
   }
 
-  private onSaveChanges = ({ pageItem }: IArticleMetadataProps, { properties }: IArticleMetadataState) => new Promise<ItemUpdateResult>((resolve, reject) => {
+  private async onSaveChanges({ pageItem }: IArticleMetadataProps, { properties }: IArticleMetadataState): Promise<ItemUpdateResult> {
     const values = {};
     properties.forEach(prop => {
       values[prop.fieldName] = prop.getValueForUpdate();
     });
     Logger.log({ message: `ArticleMetadata: onSaveChanges()`, data: { values }, level: LogLevel.Info });
-    pageItem.update(values)
-      .then(updateResult => {
-        Logger.log({ message: `ArticleMetadata: onSaveChanges() - Successfully updated page`, data: { updateResult }, level: LogLevel.Info });
-        resolve();
-      })
-      .catch(err => {
-        Logger.log({ message: `ArticleMetadata: onSaveChanges() - Failed to update page`, data: { err }, level: LogLevel.Error });
-        reject();
-      });
-  })
+    try {
+      let itemUpdateResult = await pageItem.update(values);
+      Logger.log({ message: `ArticleMetadata: onSaveChanges() - Successfully updated page`, data: { itemUpdateResult }, level: LogLevel.Info });
+      return itemUpdateResult;
+    } catch (err) {
+      Logger.log({ message: `ArticleMetadata: onSaveChanges() - Failed to update page`, data: { err }, level: LogLevel.Error });
+      return err;
+    }
+  }
 
   private onPropertyChange = (propChanged: ArticleMetadataProperty, value: any, additionalParams?: any) => {
     Logger.log({ message: `ArticleMetadata: onPropertyChange() - Property ${propChanged.fieldName} was changed`, data: { propChanged, value }, level: LogLevel.Info });
@@ -139,10 +138,11 @@ export default class ArticleMetadata extends React.Component<IArticleMetadataPro
     }
   }
 
-  public componentDidUpdate(prevProps: IArticleMetadataProps, prevState: IArticleMetadataState, prevContext: any) {
+  public async componentDidUpdate(prevProps: IArticleMetadataProps, prevState: IArticleMetadataState, prevContext: any) {
     Logger.log({ message: `ArticleMetadata: componentDidUpdate()`, data: {}, level: LogLevel.Info });
     if (prevProps.displayMode === DisplayMode.Edit && this.props.displayMode === DisplayMode.Read) {
-      this.onSaveChanges(this.props, this.state).then(result => this.fetchProperties(this.props, this.state));
+      await this.onSaveChanges(this.props, this.state);
+      this.fetchProperties(this.props, this.state);
     }
   }
 
